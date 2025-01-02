@@ -275,5 +275,6 @@ gradle-app.setting
 
 application.properties
 application.yml
+*.env
 
 # End of https://www.toptal.com/developers/gitignore/api/java,git,windows,intellij,gradle,groovy,maven
