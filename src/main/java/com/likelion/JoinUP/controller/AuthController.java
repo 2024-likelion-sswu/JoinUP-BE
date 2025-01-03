@@ -35,5 +35,15 @@ public class AuthController {
         }
     }
 
+    @PostMapping("/auth/login")
+    public ResponseEntity<ApiResponse> login(@RequestBody @Valid UserDTO.LoginRequest request) {
+        try {
+            String token = userService.login(request);
+            return ResponseEntity.ok(new ApiResponse(true, "로그인 성공", new UserDTO.LoginResponse(token)));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(401).body(new ApiResponse(false, e.getMessage()));
+        }
+    }
+
 
 }

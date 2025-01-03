@@ -3,23 +3,22 @@ package com.likelion.JoinUP.service;
 import com.likelion.JoinUP.dto.UserDTO;
 import com.likelion.JoinUP.entity.User;
 import com.likelion.JoinUP.repository.UserRepository;
+import com.likelion.JoinUP.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-
 
 @Service
 public class UserService {
     @Autowired
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtTokenProvider jwtTokenProvider;
 
-
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtTokenProvider jwtTokenProvider) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-
+        this.jwtTokenProvider = jwtTokenProvider;
     }
     public boolean verifyEmail(String email) {
         return email.endsWith("@ac.kr");
@@ -38,6 +37,15 @@ public class UserService {
                 .build();
 
         userRepository.save(user);
+    }
+
+    public String login(UserDTO.LoginRequest request) {
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 유저입니다."));
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            throw new RuntimeException("Invalid credentials.");
+        }
+        return jwtTokenProvider.createToken(request.getEmail());
     }
 
 

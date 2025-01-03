@@ -34,4 +34,21 @@ public class UserDTO {
         private String dateOfBirth;
     }
 
+    //로그인
+    @Data
+    public static class LoginRequest {
+        @NotBlank
+        private String email;
+        @NotBlank
+        private String password;
+    }
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class LoginResponse {
+        private String token;
+    }
+
+
 }
