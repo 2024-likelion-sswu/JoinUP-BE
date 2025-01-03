@@ -50,5 +50,19 @@ public class UserDTO {
         private String token;
     }
 
+    //프로필수정
+    @Data
+    public static class UserProfileUpdateRequest {
+        private String name;
+        private String dateOfBirth;
+    }
 
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UserProfileResponse {
+        private String email;
+        private String name;
+        private String dateOfBirth;
+    }
 }

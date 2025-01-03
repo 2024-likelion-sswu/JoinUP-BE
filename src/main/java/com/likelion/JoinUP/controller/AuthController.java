@@ -45,5 +45,22 @@ public class AuthController {
         }
     }
 
+    @GetMapping("/profile")
+    public ResponseEntity<ApiResponse> getUserProfile(Authentication authentication) {
+        String email = authentication.getName();
+        UserDTO.UserProfileResponse profile = userService.getUserProfile(email);
+        return ResponseEntity.ok(new ApiResponse(true, "프로필 조회", profile));
+    }
 
+    @PutMapping("/profile")
+    public ResponseEntity<ApiResponse> updateUserProfile(Authentication authentication,
+                                                         @RequestBody @Valid UserDTO.UserProfileUpdateRequest request) {
+        try {
+            String email = authentication.getName();
+            userService.updateUserProfile(email, request);
+            return ResponseEntity.ok(new ApiResponse(true, "프로필 수정 성공", email));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(new ApiResponse(false, e.getMessage()));
+        }
+    }
 }

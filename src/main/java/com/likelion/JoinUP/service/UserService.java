@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+
 @Service
 public class UserService {
     @Autowired
@@ -48,6 +49,23 @@ public class UserService {
         return jwtTokenProvider.createToken(request.getEmail());
     }
 
+    public UserDTO.UserProfileResponse getUserProfile(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 유저입니다."));
+        return new UserDTO.UserProfileResponse(user.getEmail(), user.getName(), user.getDateOfBirth());
+    }
 
+    public void updateUserProfile(String email, UserDTO.UserProfileUpdateRequest request) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 유저입니다."));
+
+        if (request.getName() != null) {
+            user.setName(request.getName());
+        }
+        if (request.getDateOfBirth() != null) {
+            user.setDateOfBirth(request.getDateOfBirth());
+        }
+        userRepository.save(user);
+    }
 
 }
