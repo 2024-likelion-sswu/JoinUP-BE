@@ -60,4 +60,18 @@ public class RecruitPostController {
         }
         return ResponseEntity.ok(new ApiResponse(true, "나의 줄서기입니다.", posts));
     }
+
+    @GetMapping("/{recruit_Id}/chat")
+    public ResponseEntity<ApiResponse> getChatInfo(Authentication authentication,
+                                                   @PathVariable Long recruit_Id) {
+        try {
+            String currentUserEmail = authentication.getName();
+            RecruitPostDTO.ChatInfoResponse chatInfo = recruitPostService.getChatInfo(currentUserEmail, recruit_Id);
+            return ResponseEntity.ok(new ApiResponse(true, "채팅방 정보를 가져왔습니다.", chatInfo));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(new ApiResponse(false, e.getMessage()));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(404).body(new ApiResponse(false, e.getMessage()));
+        }
+    }
 }

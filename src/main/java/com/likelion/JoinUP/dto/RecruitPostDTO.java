@@ -47,4 +47,12 @@ public class RecruitPostDTO {
         private LocalDateTime expiresAt;
         private String writerName;
     }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ChatInfoResponse {
+        private UserDTO.UserProfileResponse chatUser;
+        private UserDTO.UserProfileResponse chatPartner;
+    }
 }
