@@ -52,7 +52,7 @@ public class UserService {
     public UserDTO.UserProfileResponse getUserProfile(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 유저입니다."));
-        return new UserDTO.UserProfileResponse(user.getEmail(), user.getName(), user.getDateOfBirth());
+        return new UserDTO.UserProfileResponse(user.getId(), user.getEmail(), user.getName());
     }
 
     public void updateUserProfile(String email, UserDTO.UserProfileUpdateRequest request) {
