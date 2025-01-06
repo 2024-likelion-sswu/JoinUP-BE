@@ -43,7 +43,6 @@ public class RecruitPostService {
 
     public List<RecruitPostDTO.RecruitPostsResponse> getRecruitPostsByLocation(String location) {
         List<RecruitPost> recruitPosts = recruitPostRepository.findByLocationContaining(location);
-//        List<RecruitPost> recruitPosts = recruitPostRepository.findValidPostsByLocation(location);
         return recruitPosts.stream()
                 .filter(post -> post.getCurrentMembers() < post.getMaxMembers()) // 모집 정원이 차지 않은 글
                 .filter(post -> post.getExpiresAt().isAfter(LocalDateTime.now())) // 만료일시가 현재보다 이후인 글
@@ -60,7 +59,79 @@ public class RecruitPostService {
         )).collect(Collectors.toList());
     }
 
+    public List<RecruitPostDTO.RecruitPostsResponse> getMyQueuedRecruitPosts(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 사용자입니다."));
 
+        List<RecruitPost> myPosts = recruitPostRepository.findByWriter(user);
+        List<RecruitPost> queuedPosts = recruitPostRepository.findByQueuedUsersContaining(user);
+
+        // 중복 제거
+        List<RecruitPost> allPosts = Stream.concat(myPosts.stream(), queuedPosts.stream())
+                .distinct()
+                .collect(Collectors.toList());
+
+        return allPosts.stream()
+                .map(post -> new RecruitPostDTO.RecruitPostsResponse(
+                        post.getId(),
+                        post.getTitle(),
+                        post.getContent(),
+                        post.getLocation(),
+                        post.getMaxMembers(),
+                        post.getCurrentMembers(),
+                        post.getCreatedAt(),
+                        post.getExpiresAt(),
+                        post.getWriter().getName()
+                ))
+                .collect(Collectors.toList());
+    }
+
+
+    @Transactional
+    public void joinQueue(String email, Long recruitPostId) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 사용자입니다."));
+
+        RecruitPost recruitPost = recruitPostRepository.findById(recruitPostId)
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 모집글입니다."));
+
+        // 자신이 작성한 모집글인지 확인
+        if (recruitPost.getWriter().equals(user)) {
+            throw new RuntimeException("자신이 작성한 모집글에는 줄서기에 참여할 수 없습니다.");
+        }
+
+        // 현재 모집 인원이 최대 모집 인원을 초과하지 않도록 체크
+        if (recruitPost.getCurrentMembers() >= recruitPost.getMaxMembers()) {
+            throw new RuntimeException("모집이 마감되었습니다.");
+        }
+
+        // 중복 가입 방지
+        if (recruitPost.getQueuedUsers().contains(user)) {
+            throw new RuntimeException("이미 줄서기에 참여하셨습니다.");
+        }
+
+        recruitPost.getQueuedUsers().add(user);
+        recruitPost.setCurrentMembers(recruitPost.getCurrentMembers() + 1);
+        recruitPostRepository.save(recruitPost);
+    }
+
+    @Transactional
+    public void cancelQueue(String email, Long recruitPostId) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 사용자입니다."));
+
+        RecruitPost recruitPost = recruitPostRepository.findById(recruitPostId)
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 모집글입니다."));
+
+        // 사용자가 줄서기에 포함되어 있는지 확인
+        if (!recruitPost.getQueuedUsers().contains(user)) {
+            throw new RuntimeException("줄서기에 참여하지 않았습니다.");
+        }
+
+        recruitPost.getQueuedUsers().remove(user);
+        recruitPost.setCurrentMembers(recruitPost.getCurrentMembers() - 1);
+        recruitPostRepository.save(recruitPost);
+    }
 
 
 }

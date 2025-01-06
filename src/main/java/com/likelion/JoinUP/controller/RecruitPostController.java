@@ -37,4 +37,27 @@ public class RecruitPostController {
         return ResponseEntity.ok(new ApiResponse(true, "요청하신 위치에 대한 모집글입니다.", posts));
     }
 
+    @PostMapping("/{recruit_id}/join")
+    public ResponseEntity<ApiResponse> joinQueue(Authentication authentication, @PathVariable Long recruit_id) {
+        String email = authentication.getName();
+        recruitPostService.joinQueue(email, recruit_id);
+        return ResponseEntity.ok(new ApiResponse(true, "줄서기에 추가되었습니다."));
+    }
+
+    @DeleteMapping("/{recruit_id}/join")
+    public ResponseEntity<ApiResponse> cancelQueue(Authentication authentication, @PathVariable Long recruit_id) {
+        String email = authentication.getName();
+        recruitPostService.cancelQueue(email, recruit_id);
+        return ResponseEntity.ok(new ApiResponse(true, "줄서기가 취소되었습니다."));
+    }
+
+    @GetMapping("/myjoin")
+    public ResponseEntity<ApiResponse> getMyQueuedRecruitPosts(Authentication authentication) {
+        String email = authentication.getName();
+        List<RecruitPostDTO.RecruitPostsResponse> posts = recruitPostService.getMyQueuedRecruitPosts(email);
+        if (posts.isEmpty()) {
+            return ResponseEntity.ok(new ApiResponse(true, "줄서기에 참여한 모집글이 없습니다.", null));
+        }
+        return ResponseEntity.ok(new ApiResponse(true, "나의 줄서기입니다.", posts));
+    }
 }
