@@ -104,7 +104,10 @@ public class CommunityService {
         CommunityPost post = postRepository.findById(postId)
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 게시글입니다."));
 
-
+        // 좋아요 중복 처리
+        if (likeRepository.existsByPostAndUser(post, user)) {
+            throw new RuntimeException("이미 좋아요를 누르셨습니다.");
+        }
 
         // 좋아요 추가
         CommunityPostLike communityPostLike = CommunityPostLike.builder()
