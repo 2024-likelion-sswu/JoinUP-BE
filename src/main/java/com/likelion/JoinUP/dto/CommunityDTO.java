@@ -18,7 +18,6 @@ public class CommunityDTO {
         private String title;
 
         private String content;
-        private String imageUrl;
 
         @NotBlank(message = "카테고리는 필수입니다.")
         private String category;
