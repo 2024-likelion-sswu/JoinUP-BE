@@ -1,7 +1,6 @@
 package com.likelion.JoinUP.repository;
 
 import com.likelion.JoinUP.entity.CommunityPost;
-import com.likelion.JoinUP.entity.Comment;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

@@ -2,8 +2,12 @@ package com.likelion.JoinUP.service;
 
 import com.likelion.JoinUP.dto.CommunityDTO;
 import com.likelion.JoinUP.entity.CommunityPost;
+import com.likelion.JoinUP.entity.Comment;
+import com.likelion.JoinUP.entity.CommunityPostLike;
 import com.likelion.JoinUP.entity.User;
+import com.likelion.JoinUP.repository.CommentRepository;
 import com.likelion.JoinUP.repository.CommunityRepository;
+import com.likelion.JoinUP.repository.LikeRepository;
 import com.likelion.JoinUP.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,10 +20,14 @@ import java.util.stream.Collectors;
 public class CommunityService {
 
     private final CommunityRepository postRepository;
+    private final CommentRepository commentRepository;
+    private final LikeRepository likeRepository;
     private final UserRepository userRepository;
 
-    public CommunityService(CommunityRepository postRepository, UserRepository userRepository) {
+    public CommunityService(CommunityRepository postRepository, CommentRepository commentRepository, LikeRepository likeRepository, UserRepository userRepository) {
         this.postRepository = postRepository;
+        this.commentRepository = commentRepository;
+        this.likeRepository = likeRepository;
         this.userRepository = userRepository;
     }
 
@@ -69,6 +77,45 @@ public class CommunityService {
         )).collect(Collectors.toList());
     }
 
+    // 댓글 작성
+    @Transactional
+    public void addComment(String email, Long postId, CommunityDTO.CreateCommentRequest request) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 사용자입니다."));
 
+        CommunityPost post = postRepository.findById(postId)
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 게시글입니다."));
+
+        Comment comment = Comment.builder()
+                .content(request.getContent())
+                .createdAt(LocalDateTime.now())
+                .writer(user)
+                .post(post)
+                .build();
+
+        commentRepository.save(comment);
+    }
+
+    // 좋아요 추가
+    @Transactional
+    public void likePost(String email, Long postId) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 사용자입니다."));
+        CommunityPost post = postRepository.findById(postId)
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 게시글입니다."));
+
+
+
+        // 좋아요 추가
+        CommunityPostLike communityPostLike = CommunityPostLike.builder()
+                .post(post)
+                .user(user)
+                .build();
+        likeRepository.save(communityPostLike);
+
+        // 게시글의 좋아요 수 증가
+        post.setLikes(post.getLikes() + 1);
+        postRepository.save(post);
+    }
 
 }

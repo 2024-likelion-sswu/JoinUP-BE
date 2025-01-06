@@ -49,4 +49,11 @@ public class CommunityDTO {
         private String writerName;
     }
 
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class CreateCommentRequest {
+        @NotBlank(message = "댓글 내용은 필수입니다.")
+        private String content;
+    }
 }
