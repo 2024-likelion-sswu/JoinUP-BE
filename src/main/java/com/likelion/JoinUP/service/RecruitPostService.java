@@ -148,8 +148,8 @@ public class RecruitPostService {
         }
 
         return new RecruitPostDTO.ChatInfoResponse(
-                new UserDTO.UserProfileResponse(chatUser.getId(), chatUser.getEmail(), chatUser.getName()),
-                new UserDTO.UserProfileResponse(chatPartner.getId(), chatPartner.getEmail(), chatPartner.getName())
+                new UserDTO.UserProfileResponse(chatUser.getId(), chatUser.getEmail(), chatUser.getName(), chatUser.getProfileImage()),
+                new UserDTO.UserProfileResponse(chatPartner.getId(), chatPartner.getEmail(), chatPartner.getName(), chatPartner.getProfileImage())
         );
     }
 }

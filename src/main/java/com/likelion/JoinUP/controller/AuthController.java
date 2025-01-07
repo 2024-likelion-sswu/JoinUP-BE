@@ -43,9 +43,9 @@ public class AuthController {
 
     @PutMapping("/profile")
     public ResponseEntity<ApiResponse> updateUserProfile(Authentication authentication,
-                                                         @RequestBody @Valid UserDTO.UserProfileUpdateRequest request) {
+                                                         @ModelAttribute @Valid UserDTO.UserProfileUpdateRequest request) {
         String email = authentication.getName();
         userService.updateUserProfile(email, request);
-        return ResponseEntity.ok(new ApiResponse(true, "프로필이 수정되었습니다.", email));
+        return ResponseEntity.ok(new ApiResponse(true, "프로필이 수정되었습니다."));
     }
 }
