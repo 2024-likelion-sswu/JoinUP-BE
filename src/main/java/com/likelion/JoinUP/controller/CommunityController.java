@@ -27,14 +27,10 @@ public class CommunityController {
     public ResponseEntity<ApiResponse> createPost(Authentication authentication,
                                                   @RequestPart("data") @Validated CommunityDTO.CreatePostRequest request,
                                                   @RequestPart(value = "image", required = false) MultipartFile image) {
-        try {
-            String email = authentication.getName();
-            communityService.createPost(email, request, image);
+        String email = authentication.getName();
+        communityService.createPost(email, request, image);
 
-            return ResponseEntity.ok(new ApiResponse(true, "게시글이 등록되었습니다."));
-        }catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(new ApiResponse(false, e.getMessage()));
-        }
+        return ResponseEntity.ok(new ApiResponse(true, "게시글이 등록되었습니다."));
     }
 
     // 게시글 삭제
@@ -65,12 +61,8 @@ public class CommunityController {
     // 게시글 좋아요
     @PostMapping("/posts/{postId}/like")
     public ResponseEntity<ApiResponse> likePost(Authentication authentication, @PathVariable Long postId) {
-        try {
-            String email = authentication.getName();
-            communityService.likePost(email, postId);
-            return ResponseEntity.ok(new ApiResponse(true, "좋아요가 저장되었습니다."));
-        }catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(new ApiResponse(false, e.getMessage()));
-        }
+        String email = authentication.getName();
+        communityService.likePost(email, postId);
+        return ResponseEntity.ok(new ApiResponse(true, "좋아요가 저장되었습니다."));
     }
 }

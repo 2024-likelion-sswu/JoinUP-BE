@@ -23,7 +23,7 @@ public class RecruitPostDTO {
         private String location;
 
         @NotNull
-        @Min(value = 2, message = "최소 1명 이상 모집해야 합니다.")
+        @Min(value = 2, message = "최소 2명 이상 모집해야 합니다.")
         @Max(value = 6, message = "최대 6명까지만 모집할 수 있습니다.")
         private int maxMembers;
 
