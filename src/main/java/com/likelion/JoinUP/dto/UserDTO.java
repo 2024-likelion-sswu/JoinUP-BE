@@ -11,8 +11,7 @@ public class UserDTO {
     @Data
     public static class VerificationRequest {
         @NotBlank(message = "Email is required.")
-        @Email(message = "Invalid email format.")
-        @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@ac\\.kr$", message = "학교 이메일이 아닙니다.")
+        @Pattern(regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.ac\\.kr$", message = "이메일 인증에 실패하였습니다.")
         private String email;
     }
 
@@ -29,16 +28,16 @@ public class UserDTO {
         @NotBlank(message = "Name is required.")
         private String name;
 
-        @Pattern(regexp = "^(\\d{4})(\\d{2})(\\d{2})$", message = "생년월일로 입력해주세요.")
+        @Pattern(regexp = "^(\\d{4})(\\d{2})(\\d{2})$", message = "생년월일로 8자로 입력해주세요.")
         private String dateOfBirth;
     }
 
     //로그인
     @Data
     public static class LoginRequest {
-        @NotBlank
+        @NotBlank(message = "email is required.")
         private String email;
-        @NotBlank
+        @NotBlank(message = "Password is required.")
         private String password;
     }
 
@@ -56,6 +55,7 @@ public class UserDTO {
         private String dateOfBirth;
     }
 
+    //프로필 조회
     @Data
     @NoArgsConstructor
     @AllArgsConstructor

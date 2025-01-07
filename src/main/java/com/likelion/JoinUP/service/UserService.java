@@ -4,14 +4,12 @@ import com.likelion.JoinUP.dto.UserDTO;
 import com.likelion.JoinUP.entity.User;
 import com.likelion.JoinUP.repository.UserRepository;
 import com.likelion.JoinUP.security.JwtTokenProvider;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-
 @Service
 public class UserService {
-    @Autowired
+
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
@@ -20,9 +18,6 @@ public class UserService {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtTokenProvider = jwtTokenProvider;
-    }
-    public boolean verifyEmail(String email) {
-        return email.endsWith("@ac.kr");
     }
 
     public void register(UserDTO.RegisterRequest request) {
