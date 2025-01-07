@@ -44,7 +44,7 @@ public class UserService {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 유저입니다."));
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new RuntimeException("Invalid credentials.");
+            throw new RuntimeException("로그인 정보가 일치하지 않습니다.");
         }
         return jwtTokenProvider.createToken(request.getEmail());
     }
