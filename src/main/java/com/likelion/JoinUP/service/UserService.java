@@ -59,12 +59,13 @@ public class UserService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 유저입니다."));
 
-        if (request.getName() != null) {
+        if (request.getName() != null && !request.getName().isBlank()) {
             user.setName(request.getName());
         }
-        if (request.getDateOfBirth() != null) {
+        if (request.getDateOfBirth() != null && !request.getDateOfBirth().isBlank()) {
             user.setDateOfBirth(request.getDateOfBirth());
         }
+
         userRepository.save(user);
     }
 
