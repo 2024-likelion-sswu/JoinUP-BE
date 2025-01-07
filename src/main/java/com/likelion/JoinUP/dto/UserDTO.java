@@ -4,6 +4,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 
 public class UserDTO {
@@ -53,6 +54,7 @@ public class UserDTO {
     public static class UserProfileUpdateRequest {
         private String name;
         private String dateOfBirth;
+        private MultipartFile profileImage;
     }
 
     //프로필 조회
@@ -63,5 +65,6 @@ public class UserDTO {
         private Long userId;
         private String email;
         private String name;
+        private String profileImageUrl;
     }
 }
