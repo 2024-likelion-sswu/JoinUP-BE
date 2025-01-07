@@ -1,6 +1,7 @@
 package com.likelion.JoinUP.service;
 
 import com.likelion.JoinUP.dto.RecruitPostDTO;
+import com.likelion.JoinUP.dto.UserDTO;
 import com.likelion.JoinUP.entity.RecruitPost;
 import com.likelion.JoinUP.entity.User;
 import com.likelion.JoinUP.repository.RecruitPostRepository;
@@ -133,5 +134,22 @@ public class RecruitPostService {
         recruitPostRepository.save(recruitPost);
     }
 
+    public RecruitPostDTO.ChatInfoResponse getChatInfo(String chatUserEmail, Long recruitpostId) {
+        User chatUser = userRepository.findByEmail(chatUserEmail)
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 사용자입니다."));
 
+        RecruitPost recruitPost = recruitPostRepository.findById(recruitpostId)
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 모집글입니다."));
+        User chatPartner = recruitPost.getWriter();
+
+        // 자신이 자신의 모집글에 대해 채팅을 요청한 경우 예외 처리
+        if (chatUser.equals(chatPartner)) {
+            throw new IllegalArgumentException("자신의 모집글에 대해 채팅을 시작할 수 없습니다.");
+        }
+
+        return new RecruitPostDTO.ChatInfoResponse(
+                new UserDTO.UserProfileResponse(chatUser.getId(), chatUser.getEmail(), chatUser.getName()),
+                new UserDTO.UserProfileResponse(chatPartner.getId(), chatPartner.getEmail(), chatPartner.getName())
+        );
+    }
 }

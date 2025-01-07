@@ -60,8 +60,8 @@ public class UserDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class UserProfileResponse {
+        private Long userId;
         private String email;
         private String name;
-        private String dateOfBirth;
     }
 }

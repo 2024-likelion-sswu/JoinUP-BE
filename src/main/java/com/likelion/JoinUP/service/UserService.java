@@ -44,7 +44,7 @@ public class UserService {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 유저입니다."));
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new RuntimeException("Invalid credentials.");
+            throw new RuntimeException("로그인 정보가 일치하지 않습니다.");
         }
         return jwtTokenProvider.createToken(request.getEmail());
     }
@@ -52,19 +52,20 @@ public class UserService {
     public UserDTO.UserProfileResponse getUserProfile(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 유저입니다."));
-        return new UserDTO.UserProfileResponse(user.getEmail(), user.getName(), user.getDateOfBirth());
+        return new UserDTO.UserProfileResponse(user.getId(), user.getEmail(), user.getName());
     }
 
     public void updateUserProfile(String email, UserDTO.UserProfileUpdateRequest request) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 유저입니다."));
 
-        if (request.getName() != null) {
+        if (request.getName() != null && !request.getName().isBlank()) {
             user.setName(request.getName());
         }
-        if (request.getDateOfBirth() != null) {
+        if (request.getDateOfBirth() != null && !request.getDateOfBirth().isBlank()) {
             user.setDateOfBirth(request.getDateOfBirth());
         }
+
         userRepository.save(user);
     }
 
