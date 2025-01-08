@@ -35,6 +35,7 @@ public class CommunityService {
     }
 
     // 게시글 작성
+    @Transactional
     public void createPost(String email, CommunityDTO.CreatePostRequest request, MultipartFile image) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 사용자입니다."));

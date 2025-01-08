@@ -6,6 +6,7 @@ import com.likelion.JoinUP.repository.UserRepository;
 import com.likelion.JoinUP.security.JwtTokenProvider;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UserService {
@@ -58,6 +59,7 @@ public class UserService {
         );
     }
 
+    @Transactional
     public void updateUserProfile(String email, UserDTO.UserProfileUpdateRequest request) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 유저입니다."));
