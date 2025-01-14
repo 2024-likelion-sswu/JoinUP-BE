@@ -24,6 +24,7 @@ public class RecruitPostService {
         this.userRepository = userRepository;
     }
 
+    @Transactional
     public void createRecruitPost(String email, RecruitPostDTO.CreateRecruitPostRequest request) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 사용자입니다."));

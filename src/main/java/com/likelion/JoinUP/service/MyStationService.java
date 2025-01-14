@@ -6,6 +6,7 @@ import com.likelion.JoinUP.entity.User;
 import com.likelion.JoinUP.repository.MyStationRepository;
 import com.likelion.JoinUP.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,6 +34,7 @@ public class MyStationService {
     }
 
     // 정류장 추가
+    @Transactional
     public String addMyStation(String email, MyStationDTO.AddMyStationRequest request) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 사용자입니다."));
@@ -52,6 +54,7 @@ public class MyStationService {
     }
 
     // 정류장 삭제
+    @Transactional
     public void deleteMyStation(String email, Long id) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 사용자입니다."));
